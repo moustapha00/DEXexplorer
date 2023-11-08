@@ -7,15 +7,41 @@ from chromadb.config import Settings
 from langchain.document_loaders import CSVLoader, PDFMinerLoader, TextLoader, UnstructuredExcelLoader, Docx2txtLoader, \
     UnstructuredHTMLLoader
 
-# load_dotenv()
-ROOT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+
+# Description: This file contains all the variables used in the app
+
+DEVICE_EMBEDDING = "cpu"
+DEVICE_MODEL = "cpu"
+
+# Replace with your GitHub API KEY
+GITHUB_API_KEY = "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"
+
+# Define open ai api key and organization
+
+OPENAI_API_KEY = "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"
+OPENAI_ORGANIZATION = "org-wyO3x6wr6Ft5X3wAbKtSQKa5"
 
 # Define the folder for storing database
-SOURCE_DIRECTORY = f"{ROOT_DIRECTORY}/src"
-
-PERSIST_DIRECTORY = f"{ROOT_DIRECTORY}/DB"
+SOURCE_DIRECTORY = f"./data"
+# Define the folder for storing the embeddings
+PERSIST_DIRECTORY = f"./persist"
 
 MODELS_PATH = "./models"
+
+
+# Choose the model to use
+MODEL_ID = "TheBloke/Llama-2-7b-Chat-GGUF"
+MODEL_BASENAME = "llama-2-7b-chat.Q4_K_M.gguf"
+
+# If llama in model_id, use promptTemplate_type="llama"
+promptTemplate_type=None
+if "llama" in MODEL_ID.lower():
+    promptTemplate_type="llama"
+elif "mistral" in MODEL_ID.lower():
+    promptTemplate_type="mistral"
+
+# Define the embedding model to use
+EMBEDDING_NAME = "hkunlp/instructor-large"
 
 # Can be changed to a specific number
 INGEST_THREADS = os.cpu_count() or 8
@@ -54,8 +80,12 @@ DOCUMENT_MAP = {
     ".html": UnstructuredHTMLLoader,
 }
 
+
+
+
+
 # Default Instructor Model
-EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"  # Uses 1.5 GB of VRAM (High Accuracy with lower VRAM usage)
+# EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"  # Uses 1.5 GB of VRAM (High Accuracy with lower VRAM usage)
 
 ####
 #### OTHER EMBEDDING MODEL OPTIONS
@@ -97,8 +127,8 @@ EMBEDDING_MODEL_NAME = "hkunlp/instructor-large"  # Uses 1.5 GB of VRAM (High Ac
 # MODEL_ID = "TheBloke/Llama-2-13b-Chat-GGUF"
 # MODEL_BASENAME = "llama-2-13b-chat.Q4_K_M.gguf"
 
-MODEL_ID = "TheBloke/Llama-2-7b-Chat-GGUF"
-MODEL_BASENAME = "llama-2-7b-chat.Q4_K_M.gguf"
+# MODEL_ID = "TheBloke/Llama-2-7b-Chat-GGUF"
+# MODEL_BASENAME = "llama-2-7b-chat.Q4_K_M.gguf"
 
 # MODEL_ID = "TheBloke/Llama-2-70b-Chat-GGUF"
 # MODEL_BASENAME = "llama-2-70b-chat.Q4_K_M.gguf"
@@ -172,3 +202,4 @@ MODEL_BASENAME = "llama-2-7b-chat.Q4_K_M.gguf"
 # MODEL_BASENAME = "wizard-vicuna-13B.ggmlv3.q2_K.bin"
 # MODEL_ID = "TheBloke/orca_mini_3B-GGML"
 # MODEL_BASENAME = "orca-mini-3b.ggmlv3.q4_0.bin"
+

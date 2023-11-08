@@ -176,3 +176,6 @@ SOURCE_DOCUMENTS/.DS_Store
 *.gguf
 *.ggml
 *.gptq
+
+# app/json folder
+app/json/*.json
