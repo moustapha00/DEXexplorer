@@ -68,7 +68,7 @@ def load_model(device_type, model_id, model_basename=None):
         tokenizer=tokenizer,
         max_length=MAX_NEW_TOKENS,
         temperature=0.0,
-        # top_p=0.95,
+        top_p=0.95,
         repetition_penalty=1.15,
         generation_config=generation_config,
     )
@@ -97,7 +97,7 @@ def retrieval_qa_pipline(embeddings, persist_directory, llm, k, promptTemplate_t
     - The function uses embeddings from the HuggingFace library, either instruction-based or regular.
     - The Chroma class is used to load a vector store containing pre-computed embeddings.
     - The retriever fetches relevant documents or data based on a query.
-    - The prompt and memory, obtained from the `get_prompt_template` function, might be used in the QA system.
+    - The prompt, obtained from the `get_prompt_template` function, might be used in the QA system.
     - The model is loaded onto the specified device using its ID and basename.
     - The QA system retrieves relevant documents using the retriever and then answers questions based on those documents.
     """

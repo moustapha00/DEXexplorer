@@ -1,0 +1,4 @@
+Extract the liquidity model employed by the DEX.
+A liquidity model is a mechanism used to determine how assets are priced and traded on the exchange. It defines the rules and algorithms governing the supply and demand dynamics.
+If the information is unavailable in the given context, please indicate so.
+Be concise and precise in your answer.

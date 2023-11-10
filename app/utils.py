@@ -165,6 +165,14 @@ def get_documents(dex_name, save_path=SOURCE_DIRECTORY):
 
 
 def user_interaction(dex_name, k, co, cs, progress=gr.Progress()):
+    """
+    User interaction with the app. This function is called when the user clicks on the "Extract" button.
+    Parameters:
+        - dex_name: the name of the DEX to extract information from
+        - k: the number of chunks
+        - co: the chunk overlap
+        - cs: the chunk size
+    """
     results = {}
     # Define features to process
     features = ["liquidity_model", "license"]
@@ -276,6 +284,11 @@ def user_interaction(dex_name, k, co, cs, progress=gr.Progress()):
 
 
 def refresh_dex_list():
+    """
+    Refresh the list of DEXs from CoinMarketCap.
+    This function is called when the user clicks on the "Update the CoinMarketCap list" button.
+    """
+    # Read the existing list of DEXs
     df_dex_list = pd.read_excel("dataframes/dex_list.xlsx")
     df = scrape_coinmarketcap_dex_page()
     # add def to df_dex_list if not already present
@@ -296,6 +309,9 @@ def refresh_dex_list():
 
 
 def delete_table(confirm_checkbox):
+    """
+    Delete the main table.
+    """
     if confirm_checkbox:
         df = pd.DataFrame({"Dex name": [], "liquidity_model": [], "license": []})
         df.to_excel("dataframes/table.xlsx", index=False)
@@ -318,6 +334,9 @@ def delete_table(confirm_checkbox):
     return dex_to_search_from_table, dropdown, table
 
 def delete_dex_from_table(dex_to_delete_from_table, confirm_delete_dex_from_table):
+    """
+    Delete a DEX from the main table.
+    """
     if not dex_to_delete_from_table:
         gr.Info("Please select a DEX to delete from the main table.")
     else:
@@ -346,6 +365,9 @@ def delete_dex_from_table(dex_to_delete_from_table, confirm_delete_dex_from_tabl
     return dex_to_search_from_table, dropdown, table
 
 def delete_dex_from_dropdown(dex_to_delete_from_dropdown, confirm_delete_dex_from_dropdown):
+    """
+    Delete a DEX from the CoinMarketCap list.
+    """
     if not dex_to_delete_from_dropdown:
         gr.Info("Please select a DEX to delete from the CoinMarketCap list.")
     else:
@@ -369,6 +391,9 @@ def delete_dex_from_dropdown(dex_to_delete_from_dropdown, confirm_delete_dex_fro
 
 
 def delete_dropdown_list(confirm_delete_dropdown_list):
+    """
+    Delete the CoinMarketCap list.
+    """
     if not confirm_delete_dropdown_list:
         gr.Info("Please confirm that you want to delete the CoinMarketCap list.")
     else:
@@ -388,17 +413,24 @@ def delete_dropdown_list(confirm_delete_dropdown_list):
 
 
 def update_and_extract_all(k, co, cs, progress=gr.Progress()):
+    """
+    Update the CoinMarketCap list and extract information from the new DEXs.
+    Parameters:
+        - k: the number of chunks
+        - co: the chunk overlap
+        - cs: the chunk size
+    """
     results = gr.JSON(label="Results")
     old_list=pd.read_excel("dataframes/dex_list.xlsx")["Dex Name"].tolist()
-    #dropdown = refresh_dex_list()
-    #updated_list=pd.read_excel("dataframes/dex_list.xlsx")["Dex Name"].tolist()
-    #new_list = list(set(updated_list) - set(old_list))
-    #if len(new_list) == 0:
-        #gr.Info("No new DEXs added to the dropdown.")
+    dropdown = refresh_dex_list()
+    updated_list=pd.read_excel("dataframes/dex_list.xlsx")["Dex Name"].tolist()
+    new_list = list(set(updated_list) - set(old_list))
+    if len(new_list) == 0:
+        gr.Info("No new DEXs added to the dropdown.")
     # Show the new DEXs in the dropdown
-    #else:
-        #gr.Info(f"New DEXs added to the dropdown: {', '.join(new_list)}")
-    for dex_name in progress.tqdm(old_list):
+    else:
+        gr.Info(f"New DEXs added to the dropdown: {', '.join(new_list)}")
+    for dex_name in progress.tqdm(new_list):
         _, results, _ = user_interaction(dex_name, k, co, cs)
     dropdown = gr.Dropdown(
                 label="DEX Name",
@@ -427,6 +459,9 @@ def update_and_extract_all(k, co, cs, progress=gr.Progress()):
     return dropdown, dropdown1, dropdown2, dropdown3, results, table
 
 def search_fn(dex_name):
+    """
+    Search for a DEX in the main table.
+    """
     dex_row = pd.DataFrame({"Dex name": [], "liquidity_model": [], "license": []})
     visible = False
     if not dex_name:
