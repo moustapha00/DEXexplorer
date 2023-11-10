@@ -73,7 +73,6 @@ For more details, please refer to [llama-cpp](https://github.com/abetlen/llama-c
 The `app` folder is structured like this:
 
 - `app/`: Main application directory.
-    - `__init__.py`: Initializes the Python package.
     - `app.py`: The main entry point of the application.
     - `variables.py`: Contains the variables used in the application.
     - `utils.py`: Contains utility functions used across the application.
