@@ -188,23 +188,27 @@ def user_interaction(dex_name, k, co, cs, progress=gr.Progress()):
 
         progress(0.1, desc="Loading embedding model...")
         time.sleep(1)
-        embedding_model = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_NAME, model_kwargs={"device": DEVICE_EMBEDDING})
-        #embedding_model = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+        if USE_OPEN_AI:
+            embedding_model = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION)
+        else:
+            embedding_model = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_NAME, model_kwargs={"device": DEVICE_EMBEDDING})
 
         progress(0.2, desc="Loading LLM model...")
         time.sleep(1)
-        llm = run_localGPT.load_model(device_type=DEVICE_MODEL, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
-        #llm = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.0)
+        if USE_OPEN_AI:
+            llm = OpenAI(openai_api_key=OPENAI_API_KEY, openai_organization=OPENAI_ORGANIZATION, temperature=0.0)
+        else:
+            llm = run_localGPT.load_model(device_type=DEVICE_MODEL, model_id=MODEL_ID, model_basename=MODEL_BASENAME)
 
         for i, feature in enumerate(features):
             source_directory = f"{dex_folder}/{feature}"
             progress(0.4 + 0.6*(i)/len(features), desc=f"Processing {feature}..")
             time.sleep(1)
 
-            save_path = f"{source_directory}/{embedding_model.model_name}"
-            #save_path = f"{source_directory}/openaiembeddings"
-            save_path = f"{PERSIST_DIRECTORY}/{dex_name}/{feature}/{embedding_model.model_name.replace('/', '_')}"
-            #save_path = f"{PERSIST_DIRECTORY}/{dex_name}/{feature}/openaiembeddings"
+            if USE_OPEN_AI:
+                save_path = f"{PERSIST_DIRECTORY}/{dex_name}/{feature}/openaiembeddings"
+            else:
+                save_path = f"{PERSIST_DIRECTORY}/{dex_name}/{feature}/{embedding_model.model_name.replace('/', '_')}"
 
             # Convert chunk_size and chunk_overlap to integers
             cs = int(cs)
@@ -223,7 +227,10 @@ def user_interaction(dex_name, k, co, cs, progress=gr.Progress()):
             k = int(k)
 
             # Running localGPT
-            answer, docs = run_localGPT.main(llm, embedding_model, k, persist_directory, query, promptTemplate_type=None)
+            if USE_OPEN_AI:
+                answer, docs = run_localGPT.main(llm, embedding_model, k, persist_directory, query, promptTemplate_type=None)
+            else:
+                answer, docs = run_localGPT.main(llm, embedding_model, k, persist_directory, query, promptTemplate_type=promptTemplate_type)
 
             # Store the results
             results[feature] = {"answer": answer, "sources": [document for document in docs]}

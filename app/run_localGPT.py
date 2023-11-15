@@ -25,18 +25,15 @@ from variables import (
 
 def load_model(device_type, model_id, model_basename=None):
     """
-    Select a model for text generation using the HuggingFace library.
-    If you are running this for the first time, it will download a model for you.
-    subsequent runs will use the model from the disk.
+    Loads a model for text generation from HuggingFace's model hub.
 
     Args:
-        device_type (str): Type of device to use, e.g., "cuda" for GPU or "cpu" for CPU.
-        model_id (str): Identifier of the model to load from HuggingFace's model hub.
-        model_basename (str, optional): Basename of the model if using quantized models.
-            Defaults to None.
+        device_type (str): The type of device to use.
+        model_id (str): The identifier of the model to load.
+        model_basename (str): The basename of the model for quantized models.
 
     Returns:
-        HuggingFacePipeline: A pipeline object for text generation using the loaded model.
+        HuggingFacePipeline: A pipeline for text generation with the loaded model.
 
     Raises:
         ValueError: If an unsupported model or device type is provided.
@@ -81,30 +78,18 @@ def load_model(device_type, model_id, model_basename=None):
 
 def retrieval_qa_pipline(embeddings, persist_directory, llm, k, promptTemplate_type=None):
     """
-    Initializes and returns a retrieval-based Question Answering (QA) pipeline.
+    Sets up a retrieval-based Question Answering (QA) system.
 
-    This function sets up a QA system that retrieves relevant information using embeddings
-    from the HuggingFace library. It then answers questions based on the retrieved information.
-
-    Parameters:
-    - device_type (str): Specifies the type of device where the model will run, e.g., 'cpu', 'cuda', etc.
-    - use_history (bool): Flag to determine whether to use chat history or not.
+    Args:
+        embeddings: The embeddings model.
+        persist_directory: The directory to persist the vector store.
+        llm: The language model.
+        k: The number of chunks to retrieve.
+        promptTemplate_type (optional): The type of prompt template. Defaults to None.
 
     Returns:
-    - RetrievalQA: An initialized retrieval-based QA system.
-
-    Notes:
-    - The function uses embeddings from the HuggingFace library, either instruction-based or regular.
-    - The Chroma class is used to load a vector store containing pre-computed embeddings.
-    - The retriever fetches relevant documents or data based on a query.
-    - The prompt, obtained from the `get_prompt_template` function, might be used in the QA system.
-    - The model is loaded onto the specified device using its ID and basename.
-    - The QA system retrieves relevant documents using the retriever and then answers questions based on those documents.
+        RetrievalQA: An initialized retrieval-based QA system.
     """
-
-    #embeddings = HuggingFaceInstructEmbeddings(model_name=EMBEDDING_MODEL_NAME, model_kwargs={"device": device_type})
-    # uncomment the following line if you used HuggingFaceEmbeddings in the ingest.py
-    # embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
 
     # load the vectorstore
     db = Chroma(
@@ -131,23 +116,18 @@ def retrieval_qa_pipline(embeddings, persist_directory, llm, k, promptTemplate_t
 
 def main(llm, embeddings, k, persist_directory, query, promptTemplate_type=None):
     """
-    Implements the main information retrieval task for a localGPT.
+    Executes the main information retrieval.
 
-    This function sets up the QA system by loading the necessary embeddings, vectorstore, and LLM model.
-    It then enters an interactive loop where the user can input queries and receive answers. Optionally,
-    the source documents used to derive the answers can also be displayed.
+    Args:
+        llm: The language model.
+        embeddings: The embeddings model.
+        k: The number of chunks to retrieve.
+        persist_directory: The directory to persist the vector store.
+        query: The query to ask the QA system.
+        promptTemplate_type (optional): The type of prompt template. Defaults to None.
 
-    Parameters:
-    - device_type (str): Specifies the type of device where the model will run, e.g., 'cpu', 'mps', 'cuda', etc.
-    - show_sources (bool): Flag to determine whether to display the source documents used for answering.
-    - use_history (bool): Flag to determine whether to use chat history or not.
-
-    Notes:
-    - Logging information includes the device type, whether source documents are displayed, and the use of history.
-    - If the models directory does not exist, it creates a new one to store models.
-    - The user can exit the interactive loop by entering "exit".
-    - The source documents are displayed if the show_sources flag is set to True.
-
+    Returns:
+        tuple: The answer to the query and the source documents used to derive the answer.
     """
 
     #print(f"Running on: {device_type}")

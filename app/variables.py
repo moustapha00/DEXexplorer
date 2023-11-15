@@ -14,12 +14,13 @@ DEVICE_EMBEDDING = "cpu"
 DEVICE_MODEL = "cpu"
 
 # Replace with your GitHub API KEY
-GITHUB_API_KEY = "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"
+GITHUB_API_KEY = ""
 
 # Define open ai api key and organization
 
-OPENAI_API_KEY = "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"
-OPENAI_ORGANIZATION = "org-wyO3x6wr6Ft5X3wAbKtSQKa5"
+OPENAI_API_KEY = ""
+OPENAI_ORGANIZATION = ""
+USE_OPEN_AI = False
 
 # Define the folder for storing database
 SOURCE_DIRECTORY = f"./data"
